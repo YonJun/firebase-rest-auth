@@ -1,23 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import { Button } from "@chakra-ui/button";
+
+import tw, { styled, theme } from "twin.macro";
+
+const StyledInput = styled.input`
+  color: orange;
+  background-color: ${theme`colors.red.500`};
+  ${tw`border`}
+  ${({ hasBorder }) => !!hasBorder && tw`border-purple-500`}
+`;
+const Input = () => <StyledInput hasBorder />;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>hii</h1>
+      <Input />
+      <Button colorScheme="blue">Button</Button>
     </div>
   );
 }
