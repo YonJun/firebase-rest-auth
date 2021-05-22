@@ -1,22 +1,28 @@
 import { Button } from "@chakra-ui/button";
-
-import tw, { styled, theme } from "twin.macro";
-
-const StyledInput = styled.input`
-  color: orange;
-  background-color: ${theme`colors.red.500`};
-  ${tw`border`}
-  ${({ hasBorder }) => !!hasBorder && tw`border-purple-500`}
-`;
-const Input = () => <StyledInput hasBorder />;
+import { Container, VStack } from "@chakra-ui/layout";
+import { useState } from "react";
+// eslint-disable-next-line
+import tw from "twin.macro";
+import Header from "./layouts/Header";
+import List from "./layouts/List";
 
 function App() {
+  const [user, set_user] = useState(null);
   return (
-    <div>
-      <h1>hii</h1>
-      <Input />
-      <Button colorScheme="blue">Button</Button>
-    </div>
+    <VStack>
+      <Container maxW="container.md">
+        {user ? (
+          <div tw="py-10 space-y-6">
+            <Header />
+            <List />
+          </div>
+        ) : (
+          <div>
+            <Button>sign in</Button>
+          </div>
+        )}
+      </Container>
+    </VStack>
   );
 }
 
