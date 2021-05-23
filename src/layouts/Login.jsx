@@ -5,9 +5,11 @@ import { useToast } from "@chakra-ui/react";
 // eslint-disable-next-line
 import tw from "twin.macro";
 import { useLoginMutation } from "../services/hooks/public";
+import { authStore } from "../authStore";
 
 const Login = () => {
   const toast = useToast();
+  const set_token = authStore((s) => s.set_token);
 
   const [fields, setFields] = useState({
     email: "user1@hotmail.pe",
@@ -25,9 +27,7 @@ const Login = () => {
       [event.target.name]: event.target.value,
     }));
 
-  /**
-   * @param {import("react").ChangeEvent<HTMLFormElement>} e
-   */
+  /**   @param {import("react").ChangeEvent<HTMLFormElement>} e */
   const onSubmit = (e) => {
     e.preventDefault();
     mutate(
@@ -37,8 +37,7 @@ const Login = () => {
       },
       {
         onSuccess(resp) {
-          console.log("resp", JSON.stringify(resp));
-          // console.log(resp);
+          set_token(resp.idToken);
         },
         onError(error) {
           // console.log("onError", error);

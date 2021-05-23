@@ -3,9 +3,11 @@ import { Input } from "@chakra-ui/input";
 import { useState } from "react";
 // eslint-disable-next-line
 import tw from "twin.macro";
+import { userStore } from "../authStore";
 import useFocus from "../useFocus";
 
 const Header = () => {
+  const user = userStore((s) => s.user);
   const [inputRef, setInputFocus] = useFocus();
 
   const [value, setValue] = useState("");
@@ -20,18 +22,21 @@ const Header = () => {
   };
 
   return (
-    <div tw="flex items-center space-x-3">
-      <Input
-        ref={inputRef}
-        value={value}
-        onChange={handleChange}
-        placeholder="Ingrese una nueva tarea"
-        size="sm"
-      />
-      <Button onClick={add} colorScheme="blue">
-        Agregar
-      </Button>
-    </div>
+    <>
+      <h1>{user.email}</h1>
+      <div tw="flex items-center space-x-3">
+        <Input
+          ref={inputRef}
+          value={value}
+          onChange={handleChange}
+          placeholder="Ingrese una nueva tarea"
+          size="sm"
+        />
+        <Button onClick={add} colorScheme="blue">
+          Agregar
+        </Button>
+      </div>
+    </>
   );
 };
 

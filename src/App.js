@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import tw from "twin.macro";
 import { Container } from "@chakra-ui/layout";
-import authStore from "./authStore";
+import { authStore } from "./authStore";
 import Header from "./layouts/Header";
 import List from "./layouts/List";
 import Login from "./layouts/Login";
@@ -10,7 +10,6 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
