@@ -11,3 +11,13 @@ export const POST_login = (params) =>
     ...params,
     returnSecureToken: true,
   });
+
+/**
+ *  @param {LoginParams} params
+ *  @return {Promise<AxiosResponse<any>>}
+ */
+export const POST_register = (params) =>
+  AUTH.post("/accounts:signUp", {
+    ...params,
+    returnSecureToken: true,
+  });

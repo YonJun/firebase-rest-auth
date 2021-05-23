@@ -5,9 +5,25 @@ import authStore from "./authStore";
 import Header from "./layouts/Header";
 import List from "./layouts/List";
 import Login from "./layouts/Login";
+import { useRef } from "react";
+import { useDisclosure } from "@chakra-ui/hooks";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Button,
+} from "@chakra-ui/react";
+import Register from "./layouts/Register";
 
 function App() {
   const token = authStore((s) => s.token);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = useRef();
+
   return (
     <Container maxW="container.sm" centerContent>
       <div tw="py-10 w-full ">
@@ -17,7 +33,33 @@ function App() {
             <List />
           </div>
         ) : (
-          <Login />
+          <>
+            <Login />
+            <div tw="mt-5">
+              <Button
+                ref={btnRef}
+                colorScheme="gray"
+                onClick={onOpen}
+                isFullWidth>
+                Registrarse
+              </Button>
+              <Drawer
+                size="sm"
+                isOpen={isOpen}
+                placement="right"
+                onClose={onClose}
+                finalFocusRef={btnRef}>
+                <DrawerOverlay />
+                <DrawerContent>
+                  <DrawerCloseButton />
+                  <DrawerHeader />
+                  <DrawerBody>
+                    <Register />
+                  </DrawerBody>
+                </DrawerContent>
+              </Drawer>
+            </div>
+          </>
         )}
       </div>
     </Container>

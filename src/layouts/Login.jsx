@@ -10,11 +10,11 @@ const Login = () => {
   const toast = useToast();
 
   const [fields, setFields] = useState({
-    email: "user1@peru.pe",
+    email: "user1@hotmail.pe",
     pass: "123456",
   });
 
-  const { mutate } = useLoginMutation();
+  const { mutate, isLoading } = useLoginMutation();
 
   /**
    * @param {import("react").ChangeEvent<HTMLInputElement>} event
@@ -37,8 +37,8 @@ const Login = () => {
       },
       {
         onSuccess(resp) {
-          // console.log("resp", JSON.stringify(resp));
-          console.log(resp.email);
+          console.log("resp", JSON.stringify(resp));
+          // console.log(resp);
         },
         onError(error) {
           // console.log("onError", error);
@@ -78,7 +78,11 @@ const Login = () => {
         size="sm"
         required
       />
-      <Button isFullWidth colorScheme="blue" type="submit">
+      <Button
+        isFullWidth
+        colorScheme="blue"
+        type="submit"
+        isLoading={isLoading}>
         Iniciar sesión
       </Button>
     </form>
