@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/button";
 import { Input } from "@chakra-ui/input";
-import { useRef, useState } from "react";
+import { useState } from "react";
 // eslint-disable-next-line
 import tw from "twin.macro";
 import useFocus from "../useFocus";

@@ -1,6 +1,7 @@
+// eslint-disable-next-line
+import tw from "twin.macro";
 import { Fragment } from "react";
 import Task from "../components/Task";
-import tw from "twin.macro";
 const List = () => {
   return (
     <Fragment>

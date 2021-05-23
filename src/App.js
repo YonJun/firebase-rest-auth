@@ -1,28 +1,26 @@
-import { Button } from "@chakra-ui/button";
-import { Container, VStack } from "@chakra-ui/layout";
-import { useState } from "react";
 // eslint-disable-next-line
 import tw from "twin.macro";
+import { Container } from "@chakra-ui/layout";
+import authStore from "./authStore";
 import Header from "./layouts/Header";
 import List from "./layouts/List";
+import Login from "./layouts/Login";
 
 function App() {
-  const [user, set_user] = useState(null);
+  const token = authStore((s) => s.token);
   return (
-    <VStack>
-      <Container maxW="container.md">
-        {user ? (
-          <div tw="py-10 space-y-6">
+    <Container maxW="container.sm" centerContent>
+      <div tw="py-10 w-full ">
+        {token ? (
+          <div tw="space-y-6">
             <Header />
             <List />
           </div>
         ) : (
-          <div>
-            <Button>sign in</Button>
-          </div>
+          <Login />
         )}
-      </Container>
-    </VStack>
+      </div>
+    </Container>
   );
 }
 

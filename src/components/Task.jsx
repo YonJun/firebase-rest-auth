@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/button";
 import { Checkbox } from "@chakra-ui/checkbox";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Input, useBoolean } from "@chakra-ui/react";
 
 // eslint-disable-next-line
