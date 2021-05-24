@@ -42,7 +42,7 @@ PRIVATE_API.interceptors.request.use((config) => {
   if (payload) {
     config.params = { ...config.params, auth: payload.idToken };
     config.url = `${config.url}/${payload.localId}.json`;
-    console.log("PRIVATE_API config", config);
+    // console.log("PRIVATE_API config", config);
   }
   return config;
 });
@@ -53,12 +53,9 @@ PRIVATE_API.interceptors.response.use(
   },
   /**@param {AxiosError} error */
   function (error) {
-    console.log("error", error);
+    // console.log("PRIVATE_API error", error);
     if (error.response) {
-      /**@type {{error:CommonError}} */
-      const responseError = error.response;
-
-      return Promise.reject(responseError.data.error.message);
+      return Promise.reject(error.response);
     }
     return Promise.reject(error);
   },
