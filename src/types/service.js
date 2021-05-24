@@ -4,7 +4,7 @@
   @property {string} password
 */
 /**
- * @typedef {Object} LoginResponse
+ * @typedef {Object} PayloadResponse
  * @property {String} displayName
  * @property {String} email
  * @property {String} expiresIn
@@ -14,6 +14,7 @@
  * @property {String} refreshToken
  * @property {Boolean} registered
  */
+
 /**
  * @typedef {Object} CommonError
  * @property {Number} code

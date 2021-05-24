@@ -9,10 +9,10 @@ import { authStore } from "../authStore";
 
 const Login = () => {
   const toast = useToast();
-  const set_token = authStore((s) => s.set_token);
+  const set_payload = authStore((s) => s.set_payload);
 
   const [fields, setFields] = useState({
-    email: "user1@hotmail.pe",
+    email: "user2@hotmail.pe",
     pass: "123456",
   });
 
@@ -37,7 +37,7 @@ const Login = () => {
       },
       {
         onSuccess(resp) {
-          set_token(resp.idToken);
+          set_payload(resp);
         },
         onError(error) {
           // console.log("onError", error);

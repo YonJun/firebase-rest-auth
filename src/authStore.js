@@ -1,11 +1,12 @@
 import create from "zustand";
-import jwt_decode from "jwt-decode";
 import "./types/auth";
+import "./types/service";
+import { getPersisPayload, setPersisPayload } from "./uitls/PersistPayload";
 
 /**
  * @typedef {object} UserStore - creates a new type named 'SpecialType'
- * @property {null|User} user - a string property of SpecialType
- * @property {(user:User)=>void} set_user - a number property of SpecialType
+ * @property {User} user - a string property of SpecialType
+ * @property {(token:User)=>void} set_user - a number property of SpecialType
  * @property {()=>void} remove_user - an optional number property of SpecialType
  */
 
@@ -17,20 +18,18 @@ export const userStore = create((set) => ({
 }));
 
 /**
- * @typedef {object} Store - creates a new type named 'SpecialType'
- * @property {null|string} token - a string property of SpecialType
- * @property {(token:string)=>void} set_token - a number property of SpecialType
- * @property {()=>void} remove_token - an optional number property of SpecialType
+ * @typedef {object} Store
+ * @property {null|PayloadResponse} payload
+ * @property {(payload:PayloadResponse)=>void} set_payload
+ * @property {()=>void} remove_payload
  */
-
 /** @type {import("zustand").UseStore<Store>} */
 export const authStore = create((set) => ({
-  token: null,
-  set_token: (token) =>
+  payload: getPersisPayload(),
+  set_payload: (payload) =>
     set(() => {
-      const decoded = jwt_decode(token);
-      userStore.getState().set_user(decoded);
-      return { token };
+      setPersisPayload(payload);
+      return { payload };
     }),
-  remove_token: () => set(() => ({ token: null })),
+  remove_payload: () => set(() => ({ payload: null })),
 }));

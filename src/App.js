@@ -17,20 +17,24 @@ import {
   Button,
 } from "@chakra-ui/react";
 import Register from "./layouts/Register";
+import UserProvider from "./components/UserProvider";
 
 function App() {
-  const token = authStore((s) => s.token);
+  const payload = authStore((s) => s.payload);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
 
   return (
     <Container maxW="container.sm" centerContent>
       <div tw="py-10 w-full ">
-        {token ? (
-          <div tw="space-y-6">
-            <Header />
-            <List />
-          </div>
+        {payload ? (
+          <UserProvider token={payload.idToken}>
+            <div tw="space-y-6">
+              <Header />
+              <List />
+            </div>
+          </UserProvider>
         ) : (
           <>
             <Login />
