@@ -21,3 +21,10 @@
  * @property {Array<{domain:string,message:string,reason:string}>} errors
  * @property {String} message
  */
+
+/**
+ * @typedef {Object} Task
+ * @property {string} ID
+ * @property {string} description
+ * @property {boolean} done
+ */

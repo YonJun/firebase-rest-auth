@@ -12,7 +12,7 @@ const Login = () => {
   const set_payload = authStore((s) => s.set_payload);
 
   const [fields, setFields] = useState({
-    email: "user2@hotmail.pe",
+    email: "user5@peru.pe",
     pass: "123456",
   });
 

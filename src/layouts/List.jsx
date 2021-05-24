@@ -2,19 +2,27 @@
 import tw from "twin.macro";
 import { Fragment } from "react";
 import Task from "../components/Task";
+import { useTodoQuery } from "../services/hooks/private";
 const List = () => {
-  return (
-    <Fragment>
-      <div tw="space-y-5">
-        <Task description="Termnar firebase-rest-auth" done={true} />
-        <Task
-          description="Termnar firebase-rest-auth Termnar firebase-rest-authTermnar firebase-rest-authTermnar firebase-rest-authTermnar firebase-rest-auth"
-          done={false}
-        />
-        <Task description="Termnar firebase-rest-auth" done={true} />
-      </div>
-    </Fragment>
-  );
+  const { isLoading, error, data } = useTodoQuery();
+  if (isLoading) return <h1>Cargando...</h1>;
+  if (error) return <h1>{error.message}.</h1>;
+  if (data)
+    return (
+      <Fragment>
+        <div tw="space-y-5">
+          {data.map((task) => (
+            <Task
+              key={task.ID}
+              description={task.description}
+              done={task.done}
+            />
+          ))}
+        </div>
+      </Fragment>
+    );
+
+  return <h1>Sin Resultados</h1>;
 };
 
 export default List;

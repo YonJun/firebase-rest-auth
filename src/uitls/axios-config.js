@@ -1,4 +1,5 @@
 import axios from "axios";
+import { authStore } from "../authStore";
 import { API_KEY } from "../constants/auth";
 import "../types/service";
 /** @typedef { import("axios").AxiosError } AxiosError */
@@ -32,4 +33,35 @@ AUTH.interceptors.response.use(
   },
 );
 
-export { AUTH };
+const PRIVATE_API = axios.create({
+  baseURL: "https://auth-502e2-default-rtdb.firebaseio.com",
+});
+
+PRIVATE_API.interceptors.request.use((config) => {
+  const payload = authStore.getState().payload;
+  if (payload) {
+    config.params = { ...config.params, auth: payload.idToken };
+    config.url = `${config.url}/${payload.localId}.json`;
+    console.log("PRIVATE_API config", config);
+  }
+  return config;
+});
+
+PRIVATE_API.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  /**@param {AxiosError} error */
+  function (error) {
+    console.log("error", error);
+    if (error.response) {
+      /**@type {{error:CommonError}} */
+      const responseError = error.response;
+
+      return Promise.reject(responseError.data.error.message);
+    }
+    return Promise.reject(error);
+  },
+);
+
+export { AUTH, PRIVATE_API };
