@@ -28,7 +28,7 @@
  */
 
 /**
- * @typedef {SignInWithPasswordPayload|RefreshTokenPayload} PayloadResponse
+ * @typedef {Parial<SignInWithPasswordPayload|RefreshTokenPayload>} PayloadResponse
  */
 
 /**
