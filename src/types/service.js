@@ -3,8 +3,20 @@
   @property {string} email
   @property {string} password
 */
+
 /**
- * @typedef {Object} PayloadResponse
+ * @typedef {Object} RefreshTokenPayload
+ * @property {String} access_token
+ * @property {String} expires_in
+ * @property {String} id_token
+ * @property {String} project_id
+ * @property {String} refresh_token
+ * @property {String} token_type
+ * @property {String} user_id
+ */
+
+/**
+ * @typedef {Object} SignInWithPasswordPayload
  * @property {String} displayName
  * @property {String} email
  * @property {String} expiresIn
@@ -13,6 +25,10 @@
  * @property {String} localId
  * @property {String} refreshToken
  * @property {Boolean} registered
+ */
+
+/**
+ * @typedef {SignInWithPasswordPayload|RefreshTokenPayload} PayloadResponse
  */
 
 /**
