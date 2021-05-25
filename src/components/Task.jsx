@@ -6,15 +6,23 @@ import { Checkbox } from "@chakra-ui/checkbox";
 import { useEffect, useState } from "react";
 import { Input, useBoolean } from "@chakra-ui/react";
 import useFocus from "../customHooks";
-import { useUpdateTodoMutation } from "../services/hooks/private";
+import {
+  useDeleteTodoMutation,
+  useTodoQuery,
+  useUpdateTodoMutation,
+} from "../services/hooks/private";
 
 /** @type {(props: Task) => JSX.Element} */
 const Task = ({ description, done, ID }) => {
   const [inputRef, setInputFocus] = useFocus();
-  const { mutate, isLoading } = useUpdateTodoMutation();
   const [text, set_text] = useState(description);
   const [flag, setFlag] = useState(done);
   const [isEdit, set_isEdit] = useBoolean();
+  const { mutate, isLoading } = useUpdateTodoMutation();
+  const { mutate: deleteMutate, isLoading: deleteIsLoading } =
+    useDeleteTodoMutation();
+
+  const { refetch } = useTodoQuery();
 
   useEffect(() => {
     if (isEdit) {
@@ -47,7 +55,15 @@ const Task = ({ description, done, ID }) => {
   };
   const onRemove = () => {
     if (window.confirm("¿Estas seguro que quieres eleminar esta tarea?")) {
-      alert("done");
+      // alert("done");
+      deleteMutate(ID, {
+        onSuccess() {
+          refetch();
+        },
+        onError(err) {
+          console.log("deleteMutate onError err", err);
+        },
+      });
     }
   };
 
@@ -93,7 +109,9 @@ const Task = ({ description, done, ID }) => {
         ) : (
           <div tw="flex-1 min-w-0">
             <p
-              onClick={() => setFlag((prev) => !prev)}
+              onClick={() =>
+                handleCheckboxChange({ target: { checked: !flag } })
+              }
               css={[
                 tw`hover:cursor-pointer truncate select-none`,
                 flag && tw`line-through`,
@@ -122,6 +140,7 @@ const Task = ({ description, done, ID }) => {
           </Button>
         )}
         <Button
+          isLoading={deleteIsLoading}
           size="xs"
           colorScheme="red"
           variant="outline"

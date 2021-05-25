@@ -49,7 +49,7 @@ PRIVATE_API.interceptors.request.use((config) => {
       "{{USER_ID}}",
       payload.localId ?? payload.user_id,
     )}.json`;
-    console.log("PRIVATE_API config", config);
+    // console.log("PRIVATE_API config", config);
   }
   return config;
 });

@@ -11,13 +11,14 @@ export const GET_listTodo = () => {
   });
 };
 
-/**
- *  @param {Omit<Task,"ID">} params
- */
-export const POST_AddTodo = (params) => PRIVATE_API.post("/todo", params);
+/**  @param {Omit<Task,"ID">} params */
+export const POST_AddTodo = (params) =>
+  PRIVATE_API.post("/todo/{{USER_ID}}", params);
 
-/**
- *  @param {{ID:string,task:Task}} params
- */
+/** @param {{ID:string,task:Task}} params */
 export const PATCH_UpdateTodo = (params) =>
   PRIVATE_API.patch(`/todo/{{USER_ID}}/${params.ID}`, params.task);
+
+/** @param {string} ID */
+export const DELETE_Todo = (ID) =>
+  PRIVATE_API.delete(`/todo/{{USER_ID}}/${ID}`);
