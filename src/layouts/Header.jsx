@@ -1,41 +1,56 @@
+// eslint-disable-next-line
+import tw from "twin.macro";
 import { Button } from "@chakra-ui/button";
 import { Input } from "@chakra-ui/input";
 import { useState } from "react";
-// eslint-disable-next-line
-import tw from "twin.macro";
 import { userStore } from "../authStore";
-import useFocus from "../useFocus";
+import { useAddTodoMutation, useTodoQuery } from "../services/hooks/private";
 
 const Header = () => {
+  const { refetch } = useTodoQuery();
+  const { mutate, isLoading } = useAddTodoMutation();
   const user = userStore((s) => s.user);
-  const [inputRef, setInputFocus] = useFocus();
 
   const [value, setValue] = useState("");
   const handleChange = (event) => setValue(event.target.value);
 
-  const add = () => {
-    if (value.trim() !== "") {
-      alert(value);
-    } else {
-      setInputFocus();
-    }
+  /**   @param {import("react").ChangeEvent<HTMLFormElement>} e */
+  const onSubmit = (e) => {
+    e.preventDefault();
+    mutate(
+      {
+        description: value,
+        done: false,
+      },
+      {
+        onSuccess(resp) {
+          console.log("onSuccess resp", resp);
+          refetch();
+          setValue("");
+        },
+        onError(err) {
+          console.log("onError err", err);
+        },
+      },
+    );
   };
 
   return (
     <>
       <h1>{user.email}</h1>
-      <div tw="flex items-center space-x-3">
+      <form tw="flex items-center space-x-3" onSubmit={onSubmit}>
         <Input
-          ref={inputRef}
           value={value}
           onChange={handleChange}
           placeholder="Ingrese una nueva tarea"
           size="sm"
+          disabled={isLoading}
+          required
         />
-        <Button onClick={add} colorScheme="blue">
+        <Button colorScheme="blue" isLoading={isLoading} type="submit">
           Agregar
         </Button>
-      </div>
+      </form>
     </>
   );
 };
