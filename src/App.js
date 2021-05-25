@@ -29,7 +29,7 @@ function App() {
     <Container maxW="container.sm" centerContent>
       <div tw="py-10 w-full ">
         {payload ? (
-          <UserProvider token={payload.idToken}>
+          <UserProvider token={payload.idToken || payload.id_token}>
             <div tw="space-y-6">
               <Header />
               <List />

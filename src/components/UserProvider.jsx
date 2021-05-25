@@ -6,14 +6,16 @@ import jwt_decode from "jwt-decode";
 const UserProvider = ({ children, token }) => {
   const set_user = userStore((s) => s.set_user);
   const user = userStore((s) => s.user);
+  // console.log("UserProvider user", user);
+  // console.log("UserProvider token", token);
 
   useEffect(() => {
-    set_user(jwt_decode(token));
+    if (token) set_user(jwt_decode(token));
   }, [token, set_user]);
 
   if (user) return <Fragment>{children}</Fragment>;
 
-  return null;
+  return <div />;
 };
 
 export default UserProvider;

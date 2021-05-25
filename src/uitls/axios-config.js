@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from "qs";
 import { authStore } from "../authStore";
 import { API_KEY } from "../constants/auth";
 import "../types/service";
@@ -40,12 +41,42 @@ const PRIVATE_API = axios.create({
 PRIVATE_API.interceptors.request.use((config) => {
   const payload = authStore.getState().payload;
   if (payload) {
-    config.params = { ...config.params, auth: payload.idToken };
-    config.url = `${config.url}/${payload.localId}.json`;
+    config.params = {
+      ...config.params,
+      auth: payload.idToken ?? payload.id_token,
+    };
+    config.url = `${config.url}/${payload.localId ?? payload.user_id}.json`;
     // console.log("PRIVATE_API config", config);
   }
   return config;
 });
+
+async function refreshToken() {
+  const payload = authStore.getState().payload;
+  if (payload) {
+    const set_payload = authStore.getState().set_payload;
+    try {
+      const responsefreshToken = await axios({
+        method: "post",
+        url: `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,
+        data: qs.stringify({
+          grant_type: "refresh_token",
+          refresh_token: payload.refreshToken ?? payload.refresh_token,
+        }),
+        headers: {
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      });
+      set_payload(responsefreshToken.data);
+      console.log("responsefreshToken data", responsefreshToken.data);
+    } catch (responsefreshTokenError) {
+      console.log(
+        "catch (responsefreshTokenError) ",
+        JSON.stringify(responsefreshTokenError, null, 2),
+      );
+    }
+  }
+}
 
 PRIVATE_API.interceptors.response.use(
   (response) => {
@@ -53,9 +84,15 @@ PRIVATE_API.interceptors.response.use(
   },
   /**@param {AxiosError} error */
   function (error) {
-    // console.log("PRIVATE_API error", error);
     if (error.response) {
-      return Promise.reject(error.response);
+      /** @type {ResponseErrorApi} */
+      const responseError = error.response;
+      // console.log("PRIVATE_API responseError", responseError);
+      if (responseError.status === 401) {
+        // console.log("call to refresh token api");
+        refreshToken();
+      }
+      return Promise.reject(responseError);
     }
     return Promise.reject(error);
   },

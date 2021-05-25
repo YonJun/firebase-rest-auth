@@ -1,8 +1,5 @@
 import { PRIVATE_API } from "../../uitls/axios-config";
 import "../../types/service";
-/** @typedef { import("axios").AxiosResponse } AxiosResponse */
-const d = PRIVATE_API.get("/todo");
-
 /**
  *  @return {Promise<Array<Object>>}
  */

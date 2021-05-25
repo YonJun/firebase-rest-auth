@@ -10,7 +10,7 @@ export const getPersisPayload = () => {
   const str_payload = localStorage.getItem(KEY)
     ? JSON.parse(localStorage.getItem(KEY))
     : null;
-  // console.log("str_payload", str_payload);
+  console.log("str_payload", str_payload);
 
   if (str_payload) {
     return str_payload;

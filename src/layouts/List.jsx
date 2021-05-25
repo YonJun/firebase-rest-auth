@@ -6,7 +6,7 @@ import { useTodoQuery } from "../services/hooks/private";
 const List = () => {
   const { isLoading, error, data } = useTodoQuery();
   if (isLoading) return <h1>Cargando...</h1>;
-  if (error) return <h1>{error.data.error}</h1>;
+  if (error) return <pre>{JSON.stringify(error, null, 2)}</pre>;
   if (data)
     return (
       <Fragment>
