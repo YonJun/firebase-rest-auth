@@ -122,6 +122,7 @@ const Task = ({ description, done, ID }) => {
               }
               css={[
                 tw`hover:cursor-pointer truncate select-none`,
+                isLoading && tw`pointer-events-none`,
                 flag && tw`line-through`,
               ]}>
               {text}
