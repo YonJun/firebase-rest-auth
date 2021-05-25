@@ -3,7 +3,7 @@ import tw, { css } from "twin.macro";
 import "../types/service";
 import { Button } from "@chakra-ui/button";
 import { Checkbox } from "@chakra-ui/checkbox";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Input, useBoolean } from "@chakra-ui/react";
 import useFocus from "../customHooks";
 import {
@@ -16,13 +16,14 @@ import {
 const Task = ({ description, done, ID }) => {
   const [inputRef, setInputFocus] = useFocus();
   const [text, set_text] = useState(description);
+  const textInput = useRef(description);
   const [flag, setFlag] = useState(done);
   const [isEdit, set_isEdit] = useBoolean();
   const { mutate, isLoading } = useUpdateTodoMutation();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     useDeleteTodoMutation();
-
   const { refetch } = useTodoQuery();
+  console.log(textInput.current);
 
   useEffect(() => {
     if (isEdit) {
@@ -31,24 +32,31 @@ const Task = ({ description, done, ID }) => {
   }, [isEdit]);
 
   const onSave = () => {
-    if (text.trim() !== "") {
-      mutate(
-        {
-          ID,
-          task: {
-            description: text,
+    const txt = text.trim();
+
+    if (txt !== "") {
+      if (txt === textInput.current) {
+        set_text(textInput.current);
+        set_isEdit.off();
+      } else
+        mutate(
+          {
+            ID,
+            task: {
+              description: text,
+            },
           },
-        },
-        {
-          onSuccess(resp) {
-            console.log("onSuccess resp", resp);
-            set_isEdit.off();
+          {
+            onSuccess(resp) {
+              console.log("onSuccess resp", resp);
+              set_isEdit.off();
+              textInput.current = txt;
+            },
+            onError(err) {
+              console.log("onError err", err);
+            },
           },
-          onError(err) {
-            console.log("onError err", err);
-          },
-        },
-      );
+        );
     } else {
       setInputFocus();
     }
@@ -122,14 +130,26 @@ const Task = ({ description, done, ID }) => {
         )}
 
         {isEdit ? (
-          <Button
-            isLoading={isLoading}
-            onClick={onSave}
-            size="xs"
-            colorScheme="blue"
-            variant="outline">
-            Guardar
-          </Button>
+          <>
+            <Button
+              size="xs"
+              colorScheme="blue"
+              variant="outline"
+              onClick={() => {
+                set_text(textInput.current);
+                set_isEdit.off();
+              }}>
+              X
+            </Button>
+            <Button
+              isLoading={isLoading}
+              onClick={onSave}
+              size="xs"
+              colorScheme="blue"
+              variant="outline">
+              Guardar
+            </Button>
+          </>
         ) : (
           <Button
             onClick={set_isEdit.on}
