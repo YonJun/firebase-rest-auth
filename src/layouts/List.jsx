@@ -12,11 +12,7 @@ const List = () => {
       <Fragment>
         <div tw="space-y-5">
           {data.map((task) => (
-            <Task
-              key={task.ID}
-              description={task.description}
-              done={task.done}
-            />
+            <Task key={task.ID} {...task} />
           ))}
         </div>
       </Fragment>

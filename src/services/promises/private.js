@@ -3,7 +3,7 @@ import "../../types/service";
 
 /** @return {Promise<Array<Task>>}  */
 export const GET_listTodo = () => {
-  return PRIVATE_API.get("/todo").then((resp) => {
+  return PRIVATE_API.get("/todo/{{USER_ID}}").then((resp) => {
     if (resp.data) {
       return Object.keys(resp.data).map((e, i) => ({ ID: e, ...resp.data[e] }));
     }
@@ -13,10 +13,11 @@ export const GET_listTodo = () => {
 
 /**
  *  @param {Omit<Task,"ID">} params
- *  @return {Promise<AxiosResponse<Task>>}
  */
-export const POST_AddTodo = (params) =>
-  PRIVATE_API.post("/todo", params).then((resp) => {
-    console.log("POST_AddTodo resp", resp);
-    return resp;
-  });
+export const POST_AddTodo = (params) => PRIVATE_API.post("/todo", params);
+
+/**
+ *  @param {{ID:string,task:Task}} params
+ */
+export const PATCH_UpdateTodo = (params) =>
+  PRIVATE_API.patch(`/todo/{{USER_ID}}/${params.ID}`, params.task);

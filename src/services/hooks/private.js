@@ -1,9 +1,16 @@
 import "../../types/service";
 import { useMutation, useQuery } from "react-query";
-import { GET_listTodo, POST_AddTodo } from "../promises/private";
+import {
+  GET_listTodo,
+  PATCH_UpdateTodo,
+  POST_AddTodo,
+} from "../promises/private";
 
 /** @type {() => import("react-query").UseQueryResult<Array<Task> ,ResponseErrorApi>}*/
-export const useTodoQuery = () => useQuery("login", GET_listTodo);
+export const useTodoQuery = () => useQuery("GET_listTodo", GET_listTodo);
 
-/** @type {() => import("react-query").UseMutationResult<Task ,ResponseErrorApi, Omit<Task,'ID'>, unknown>}*/
-export const useAddTodoMutation = () => useMutation("login", POST_AddTodo);
+/** @type {() => import("react-query").UseMutationResult<void ,ResponseErrorApi, Omit<Task,'ID'>>}*/
+export const useAddTodoMutation = () => useMutation(POST_AddTodo);
+
+/** @type {() => import("react-query").UseMutationResult<void ,ResponseErrorApi, {ID:string,task:Omit<Task,'ID'>}>}*/
+export const useUpdateTodoMutation = () => useMutation(PATCH_UpdateTodo);

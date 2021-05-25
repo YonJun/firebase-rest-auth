@@ -1,25 +1,17 @@
+// eslint-disable-next-line
+import tw, { css } from "twin.macro";
+import "../types/service";
 import { Button } from "@chakra-ui/button";
 import { Checkbox } from "@chakra-ui/checkbox";
 import { useEffect, useState } from "react";
 import { Input, useBoolean } from "@chakra-ui/react";
+import useFocus from "../customHooks";
+import { useUpdateTodoMutation } from "../services/hooks/private";
 
-// eslint-disable-next-line
-import tw, { css } from "twin.macro";
-import useFocus from "../useFocus";
-
-/**
- * @typedef {object} Props
- * @property {boolean} done
- * @property {string} description
- */
-
-/**
- * @type {(props: Props) => JSX.Element}
- * */
-
-const Task = ({ description, done }) => {
+/** @type {(props: Task) => JSX.Element} */
+const Task = ({ description, done, ID }) => {
   const [inputRef, setInputFocus] = useFocus();
-
+  const { mutate, isLoading } = useUpdateTodoMutation();
   const [text, set_text] = useState(description);
   const [flag, setFlag] = useState(done);
   const [isEdit, set_isEdit] = useBoolean();
@@ -32,7 +24,23 @@ const Task = ({ description, done }) => {
 
   const onSave = () => {
     if (text.trim() !== "") {
-      set_isEdit.off();
+      mutate(
+        {
+          ID,
+          task: {
+            description: text,
+          },
+        },
+        {
+          onSuccess(resp) {
+            console.log("onSuccess resp", resp);
+            set_isEdit.off();
+          },
+          onError(err) {
+            console.log("onError err", err);
+          },
+        },
+      );
     } else {
       setInputFocus();
     }
@@ -43,15 +51,39 @@ const Task = ({ description, done }) => {
     }
   };
 
+  /**   @param {import("react").ChangeEvent<HTMLInputElement>} e */
+  const handleCheckboxChange = (e) => {
+    const newFlag = e.target.checked;
+    console.log("new flag", newFlag);
+    mutate(
+      {
+        ID,
+        task: {
+          done: newFlag,
+        },
+      },
+      {
+        onSuccess(resp) {
+          console.log("onSuccess resp", resp);
+          setFlag(newFlag);
+        },
+        onError(err) {
+          console.log("onError err", err);
+        },
+      },
+    );
+  };
   return (
     <div>
       <div tw="flex items-center">
         <Checkbox
+          isDisabled={isLoading}
           isChecked={flag}
-          onChange={(e) => setFlag(e.target.checked)}
+          onChange={handleCheckboxChange}
         />
         {isEdit ? (
           <Input
+            disabled={isLoading}
             ref={inputRef}
             value={text}
             onChange={(event) => set_text(event.target.value)}
@@ -73,6 +105,7 @@ const Task = ({ description, done }) => {
 
         {isEdit ? (
           <Button
+            isLoading={isLoading}
             onClick={onSave}
             size="xs"
             colorScheme="blue"

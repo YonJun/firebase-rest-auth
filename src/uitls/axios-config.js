@@ -45,8 +45,11 @@ PRIVATE_API.interceptors.request.use((config) => {
       ...config.params,
       auth: payload.idToken ?? payload.id_token,
     };
-    config.url = `${config.url}/${payload.localId ?? payload.user_id}.json`;
-    // console.log("PRIVATE_API config", config);
+    config.url = `${config.url.replace(
+      "{{USER_ID}}",
+      payload.localId ?? payload.user_id,
+    )}.json`;
+    console.log("PRIVATE_API config", config);
   }
   return config;
 });
