@@ -8,12 +8,15 @@ import { Input, useBoolean } from "@chakra-ui/react";
 import useFocus from "../customHooks";
 import {
   useDeleteTodoMutation,
-  useTodoQuery,
   useUpdateTodoMutation,
 } from "../services/hooks/private";
+import { useQueryClient } from "react-query";
+import { LIST_TODO } from "../constants/QueryKeys";
 
 /** @type {(props: Task) => JSX.Element} */
 const Task = ({ description, done, ID }) => {
+  const queryClient = useQueryClient();
+
   const [inputRef, setInputFocus] = useFocus();
   const [text, set_text] = useState(description);
   const textInput = useRef(description);
@@ -21,7 +24,30 @@ const Task = ({ description, done, ID }) => {
   const [isEdit, set_isEdit] = useBoolean();
   const { mutate, isLoading } = useUpdateTodoMutation();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
-    useDeleteTodoMutation();
+    useDeleteTodoMutation({
+      onMutate: async (idTodo) => {
+        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+        await queryClient.cancelQueries([LIST_TODO, idTodo]);
+        // Snapshot the previous value
+        const previousTodo = queryClient.getQueryData(LIST_TODO);
+        // Optimistically update to the new value
+        queryClient.setQueryData(LIST_TODO, (old) =>
+          old.filter((task) => task.ID !== idTodo),
+        );
+        // Return a context with the previous and new todo
+        return { previousTodo };
+      },
+      // If the mutation fails, use the context we returned above
+      onError: (_, __, context) => {
+        queryClient.setQueryData(LIST_TODO, context.previousTodo);
+      },
+      // Always refetch after error or success:
+      onSettled: (newTodo) => {
+        console.log("onSettled: (newTodo)", newTodo);
+
+        queryClient.invalidateQueries(LIST_TODO);
+      },
+    });
   // const { refetch } = useTodoQuery();
   // console.log(textInput.current);
 

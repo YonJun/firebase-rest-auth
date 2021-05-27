@@ -7,6 +7,7 @@ import { memo, useState } from "react";
 import { useUser, useAuth } from "reactfire";
 import { useMutation, useQueryClient } from "react-query";
 import { POST_AddTodo } from "../services/promises/private";
+import { LIST_TODO } from "../constants/QueryKeys";
 
 const Header = () => {
   // console.log("render Header");
@@ -15,20 +16,20 @@ const Header = () => {
   const { mutate, isLoading } = useMutation(POST_AddTodo, {
     // When mutate is called:
     onMutate: async (todo) => {
-      // await queryClient.cancelQueries("GET_listTodo");
+      await queryClient.cancelQueries(LIST_TODO);
 
-      const previousValue = queryClient.getQueryData("GET_listTodo");
+      const previousValue = queryClient.getQueryData(LIST_TODO);
 
-      queryClient.setQueryData("GET_listTodo", (old) => [...old, todo]);
+      queryClient.setQueryData(LIST_TODO, (old) => [...old, todo]);
 
       return previousValue;
     },
     // On failure, roll back to the previous value
     onError: (err, variables, previousValue) =>
-      queryClient.setQueryData("GET_listTodo", previousValue),
+      queryClient.setQueryData(LIST_TODO, previousValue),
     // After success or failure, refetch the GET_listTodo query
     onSettled: () => {
-      queryClient.invalidateQueries("GET_listTodo");
+      queryClient.invalidateQueries(LIST_TODO);
     },
   });
   const { data: user } = useUser();

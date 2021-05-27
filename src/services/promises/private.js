@@ -20,5 +20,8 @@ export const PATCH_UpdateTodo = (params) =>
   PRIVATE_API.patch(`/todo/{{USER_ID}}/${params.ID}`, params.task);
 
 /** @param {string} ID */
-export const DELETE_Todo = (ID) =>
-  PRIVATE_API.delete(`/todo/{{USER_ID}}/${ID}`);
+export const DELETE_Todo = (ID) => {
+  // throw new Error("xd");
+
+  return PRIVATE_API.delete(`/todo/{{USER_ID}}/${ID}`);
+};
