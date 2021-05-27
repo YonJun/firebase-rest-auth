@@ -14,8 +14,9 @@ export const useTodoQuery = () => useQuery(LIST_TODO, GET_listTodo);
 /** @type {() => import("react-query").UseMutationResult<void ,ResponseErrorApi, Omit<Task,'ID'>>}*/
 export const useAddTodoMutation = () => useMutation(POST_AddTodo);
 
-/** @type {() => import("react-query").UseMutationResult<void ,ResponseErrorApi, {ID:string,task:Omit<Task,'ID'>}>}*/
-export const useUpdateTodoMutation = () => useMutation(PATCH_UpdateTodo);
+/** @type {((options:import("react-query").UseMutationOptions) => import("react-query").UseMutationResult<void ,ResponseErrorApi, {ID:string,task:Omit<Task,'ID'>}>}*/
+export const useUpdateTodoMutation = (options = {}) =>
+  useMutation(PATCH_UpdateTodo, options);
 
 /** @type {(options:import("react-query").UseMutationOptions) => import("react-query").UseMutationResult<void ,ResponseErrorApi, string>}*/
 export const useDeleteTodoMutation = (options = {}) =>
