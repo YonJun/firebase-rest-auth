@@ -21,7 +21,10 @@ export const useAddTodoMutation = () =>
 
       const previousValue = queryClient.getQueryData(LIST_TODO);
 
-      queryClient.setQueryData(LIST_TODO, (old) => [...old, todo]);
+      queryClient.setQueryData(LIST_TODO, (old) => [
+        ...old,
+        { ID: previousValue.length + 1, ...todo },
+      ]);
 
       return previousValue;
     },
