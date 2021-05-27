@@ -1,19 +1,18 @@
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import { userStore } from "../authStore";
-import jwt_decode from "jwt-decode";
 
 /** @type {import("react").FC<{token:string}>} */
-const UserProvider = ({ children, token }) => {
+const UserProvider = ({ children, user: userParam }) => {
   const set_user = userStore((s) => s.set_user);
   const user = userStore((s) => s.user);
   // console.log("UserProvider user", user);
   // console.log("UserProvider token", token);
 
   useEffect(() => {
-    if (token) set_user(jwt_decode(token));
-  }, [token, set_user]);
+    if (userParam) set_user(userParam);
+  }, [userParam, set_user]);
 
-  if (user) return <Fragment>{children}</Fragment>;
+  if (user) return children;
 
   return <div />;
 };

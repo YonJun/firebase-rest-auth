@@ -1,7 +1,7 @@
 import "../types/service";
 import axios from "axios";
 import qs from "qs";
-import { authStore } from "../authStore";
+
 import { API_KEY } from "../constants/auth";
 import firebase from "firebase/app";
 

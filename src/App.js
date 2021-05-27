@@ -17,10 +17,11 @@ import {
   Button,
 } from "@chakra-ui/react";
 import Register from "./layouts/Register";
-import { AuthCheck } from "reactfire";
+import { AuthCheck, useUser } from "reactfire";
+import UserProvider from "./components/UserProvider";
 
 function App() {
-  console.log("render App");
+  const { data: user } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
   return (
@@ -58,10 +59,12 @@ function App() {
           }>
           {
             <>
-              <div tw="space-y-6">
-                <Header />
-                <List />
-              </div>
+              <UserProvider user={user}>
+                <div tw="space-y-6">
+                  <Header />
+                  <List />
+                </div>
+              </UserProvider>
             </>
           }
         </AuthCheck>

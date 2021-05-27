@@ -4,15 +4,14 @@ import { Button } from "@chakra-ui/button";
 import { Input } from "@chakra-ui/input";
 import { memo, useState } from "react";
 // import { useAddTodoMutation, useTodoQuery } from "../services/hooks/private";
-import { useUser, useAuth } from "reactfire";
+import { useAuth } from "reactfire";
 import { useAddTodoMutation } from "../services/hooks/private";
+import { userStore } from "../authStore";
 
 const Header = () => {
-  // console.log("render Header");
   const { mutate, isLoading } = useAddTodoMutation();
-  const { data: user } = useUser();
+  const user = userStore((s) => s.user);
   const auth = useAuth();
-
   const btnLogout = () => {
     auth.signOut();
   };
