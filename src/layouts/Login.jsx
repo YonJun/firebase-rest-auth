@@ -94,7 +94,14 @@ const Login = () => {
         }}>
         Iniciar sesión con Google
       </Button>
-      <Button isFullWidth colorScheme="facebook" onClick={() => {}}>
+      <Button
+        isFullWidth
+        colorScheme="facebook"
+        onClick={() => {
+          firebase
+            .auth()
+            .signInWithPopup(new rootFirebase.auth.FacebookAuthProvider());
+        }}>
         Iniciar sesión con Facebook
       </Button>
     </form>
