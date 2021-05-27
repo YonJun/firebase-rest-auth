@@ -1,7 +1,11 @@
 import create from "zustand";
 import "./types/auth";
 import "./types/service";
-import { getPersisPayload, setPersisPayload } from "./uitls/PersistPayload";
+import {
+  clearPersisPayload,
+  getPersisPayload,
+  setPersisPayload,
+} from "./uitls/PersistPayload";
 
 /**
  * @typedef {object} UserStore - creates a new type named 'SpecialType'
@@ -25,11 +29,15 @@ export const userStore = create((set) => ({
  */
 /** @type {import("zustand").UseStore<Store>} */
 export const authStore = create((set) => ({
-  payload: getPersisPayload(),
+  payload: null,
   set_payload: (payload) =>
     set(() => {
       setPersisPayload(payload);
       return { payload };
     }),
-  remove_payload: () => set(() => ({ payload: null })),
+  remove_payload: () =>
+    set(() => {
+      clearPersisPayload();
+      return { payload: null };
+    }),
 }));

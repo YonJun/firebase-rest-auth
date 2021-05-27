@@ -87,3 +87,66 @@
  * @property {Config} config
  * @property {Object} request
  */
+
+// ---------------------
+//  POST_login success response
+// ---------------------
+
+/**
+ * @typedef UserType
+ * @property {string} uid
+ * @property {any} [displayName]
+ * @property {any} [photoURL]
+ * @property {string} email
+ * @property {boolean} emailVerified
+ * @property {any} [phoneNumber]
+ * @property {boolean} isAnonymous
+ * @property {any} [tenantId]
+ * @property {object[]} providerData
+ * @property {string} apiKey
+ * @property {string} appName
+ * @property {string} authDomain
+ * @property {UserStsTokenManagerType} stsTokenManager
+ * @property {any} [redirectEventId]
+ * @property {string} lastLoginAt
+ * @property {string} createdAt
+ * @property {UserMultiFactorType} multiFactor
+ */
+
+/**
+ * @typedef SignInSuccessResponse
+ * @property {UserType} user
+ * @property {any} [credential]
+ * @property {AdditionalUserInfoType} additionalUserInfo
+ * @property {string} operationType
+ */
+
+/**
+ * @typedef UserStsTokenManagerType
+ * @property {string} apiKey
+ * @property {string} refreshToken
+ * @property {string} accessToken
+ * @property {number} expirationTime
+ */
+
+/**
+ * @typedef UserMultiFactorType
+ * @property {any[]} enrolledFactors
+ */
+
+/**
+ * @typedef AdditionalUserInfoType
+ * @property {string} providerId
+ * @property {boolean} isNewUser
+ */
+
+// ---------------------
+//  POST_login error response
+// ---------------------
+
+/**
+ * @typedef SignInErrorResponse
+ * @property {string} code
+ * @property {string} message
+ * @property {any} [a]
+ */

@@ -5,11 +5,9 @@ import { useToast } from "@chakra-ui/react";
 // eslint-disable-next-line
 import tw from "twin.macro";
 import { useLoginMutation } from "../services/hooks/public";
-import { authStore } from "../authStore";
 
 const Login = () => {
   const toast = useToast();
-  const set_payload = authStore((s) => s.set_payload);
 
   const [fields, setFields] = useState({
     email: "user5@peru.pe",
@@ -37,20 +35,19 @@ const Login = () => {
       },
       {
         onSuccess(resp) {
-          set_payload(resp);
+          // console.log("onSuccess", JSON.stringify(resp, null, 2));
+          // set_payload(resp);
         },
         onError(error) {
-          // console.log("onError", error);
-          if (typeof error === "string") {
-            const e =
-              error.charAt(0).toUpperCase() + error.slice(1).toLowerCase();
-
-            toast({
-              title: e.replace(/_/g, " "),
-              status: "error",
-              isClosable: true,
-            });
-          }
+          const m =
+            error.code === "auth/user-not-found"
+              ? "Usuario no encontrado"
+              : error.message;
+          toast({
+            title: m,
+            status: "error",
+            isClosable: true,
+          });
         },
       },
     );

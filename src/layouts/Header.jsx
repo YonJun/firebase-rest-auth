@@ -2,14 +2,41 @@
 import tw from "twin.macro";
 import { Button } from "@chakra-ui/button";
 import { Input } from "@chakra-ui/input";
-import { useState } from "react";
-import { userStore } from "../authStore";
-import { useAddTodoMutation, useTodoQuery } from "../services/hooks/private";
+import { memo, useState } from "react";
+// import { useAddTodoMutation, useTodoQuery } from "../services/hooks/private";
+import { useUser, useAuth } from "reactfire";
+import { useMutation, useQueryClient } from "react-query";
+import { POST_AddTodo } from "../services/promises/private";
 
 const Header = () => {
-  const { refetch } = useTodoQuery();
-  const { mutate, isLoading } = useAddTodoMutation();
-  const user = userStore((s) => s.user);
+  // console.log("render Header");
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading } = useMutation(POST_AddTodo, {
+    // When mutate is called:
+    onMutate: async (todo) => {
+      // await queryClient.cancelQueries("GET_listTodo");
+
+      const previousValue = queryClient.getQueryData("GET_listTodo");
+
+      queryClient.setQueryData("GET_listTodo", (old) => [...old, todo]);
+
+      return previousValue;
+    },
+    // On failure, roll back to the previous value
+    onError: (err, variables, previousValue) =>
+      queryClient.setQueryData("GET_listTodo", previousValue),
+    // After success or failure, refetch the GET_listTodo query
+    onSettled: () => {
+      queryClient.invalidateQueries("GET_listTodo");
+    },
+  });
+  const { data: user } = useUser();
+  const auth = useAuth();
+
+  const btnLogout = () => {
+    auth.signOut();
+  };
 
   const [value, setValue] = useState("");
   const handleChange = (event) => setValue(event.target.value);
@@ -24,8 +51,8 @@ const Header = () => {
       },
       {
         onSuccess(resp) {
-          console.log("onSuccess resp", resp);
-          refetch();
+          // console.log("onSuccess resp", resp);
+          // refetch();
           setValue("");
         },
         onError(err) {
@@ -37,7 +64,12 @@ const Header = () => {
 
   return (
     <>
-      <h1>{user.email}</h1>
+      <div tw="flex items-center justify-between">
+        <h1>{user.email}</h1>
+        <Button colorScheme="gray" onClick={btnLogout}>
+          Cerrar sesión
+        </Button>
+      </div>
       <form tw="flex items-center space-x-3" onSubmit={onSubmit}>
         <Input
           value={value}
@@ -55,4 +87,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);

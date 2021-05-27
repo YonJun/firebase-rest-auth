@@ -22,8 +22,8 @@ const Task = ({ description, done, ID }) => {
   const { mutate, isLoading } = useUpdateTodoMutation();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
     useDeleteTodoMutation();
-  const { refetch } = useTodoQuery();
-  console.log(textInput.current);
+  // const { refetch } = useTodoQuery();
+  // console.log(textInput.current);
 
   useEffect(() => {
     if (isEdit) {
@@ -66,7 +66,7 @@ const Task = ({ description, done, ID }) => {
       // alert("done");
       deleteMutate(ID, {
         onSuccess() {
-          refetch();
+          // refetch();
         },
         onError(err) {
           console.log("deleteMutate onError err", err);

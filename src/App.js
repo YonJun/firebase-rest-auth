@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import tw from "twin.macro";
 import { Container } from "@chakra-ui/layout";
-import { authStore } from "./authStore";
+
 import Header from "./layouts/Header";
 import List from "./layouts/List";
 import Login from "./layouts/Login";
@@ -17,25 +17,33 @@ import {
   Button,
 } from "@chakra-ui/react";
 import Register from "./layouts/Register";
-import UserProvider from "./components/UserProvider";
+import { useUser } from "reactfire";
 
 function App() {
-  const payload = authStore((s) => s.payload);
-
+  console.log("render App");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
+  const resultUseUser = useUser();
+  const { data: user } = useUser();
+  console.log("resultUseUser", resultUseUser);
 
   return (
     <Container maxW="container.sm" centerContent>
       <div tw="py-10 w-full ">
-        {payload ? (
-          <UserProvider token={payload.idToken || payload.id_token}>
+        {user ? (
+          <>
             <div tw="space-y-6">
               <Header />
               <List />
             </div>
-          </UserProvider>
+          </>
         ) : (
+          // <UserProvider token={payload.idToken || payload.id_token}>
+          //   <div tw="space-y-6">
+          //     <Header />
+          //     <List />
+          //   </div>
+          // </UserProvider>
           <>
             <Login />
             <div tw="mt-5">

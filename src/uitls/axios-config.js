@@ -1,10 +1,11 @@
+import "../types/service";
 import axios from "axios";
 import qs from "qs";
 import { authStore } from "../authStore";
 import { API_KEY } from "../constants/auth";
-import "../types/service";
-/** @typedef { import("axios").AxiosError } AxiosError */
+import firebase from "firebase/app";
 
+/** @typedef { import("axios").AxiosError } AxiosError */
 const AUTH = axios.create({
   baseURL: "https://identitytoolkit.googleapis.com/v1",
 });
@@ -38,47 +39,45 @@ const PRIVATE_API = axios.create({
   baseURL: "https://auth-502e2-default-rtdb.firebaseio.com",
 });
 
-PRIVATE_API.interceptors.request.use((config) => {
-  const payload = authStore.getState().payload;
-  if (payload) {
+PRIVATE_API.interceptors.request.use(async (config) => {
+  var user = firebase.auth().currentUser;
+  if (user) {
+    const token = await user.getIdToken();
     config.params = {
       ...config.params,
-      auth: payload.idToken ?? payload.id_token,
+      auth: token,
     };
-    config.url = `${config.url.replace(
-      "{{USER_ID}}",
-      payload.localId ?? payload.user_id,
-    )}.json`;
-    // console.log("PRIVATE_API config", config);
+    config.url = `${config.url.replace("{{USER_ID}}", user.uid)}.json`;
   }
+  console.log("PRIVATE_API config", config.url, config.method);
   return config;
 });
 
 async function refreshToken() {
-  const payload = authStore.getState().payload;
-  if (payload) {
-    const set_payload = authStore.getState().set_payload;
-    try {
-      const responsefreshToken = await axios({
-        method: "post",
-        url: `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,
-        data: qs.stringify({
-          grant_type: "refresh_token",
-          refresh_token: payload.refreshToken ?? payload.refresh_token,
-        }),
-        headers: {
-          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
-        },
-      });
-      set_payload(responsefreshToken.data);
-      console.log("responsefreshToken data", responsefreshToken.data);
-    } catch (responsefreshTokenError) {
-      console.log(
-        "catch (responsefreshTokenError) ",
-        JSON.stringify(responsefreshTokenError, null, 2),
-      );
-    }
-  }
+  // const payload = authStore.getState().payload;
+  // if (payload) {
+  //   const set_payload = authStore.getState().set_payload;
+  //   try {
+  //     const responsefreshToken = await axios({
+  //       method: "post",
+  //       url: `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,
+  //       data: qs.stringify({
+  //         grant_type: "refresh_token",
+  //         refresh_token: payload.refreshToken ?? payload.refresh_token,
+  //       }),
+  //       headers: {
+  //         "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+  //       },
+  //     });
+  //     set_payload(responsefreshToken.data);
+  //     console.log("responsefreshToken data", responsefreshToken.data);
+  //   } catch (responsefreshTokenError) {
+  //     console.log(
+  //       "catch (responsefreshTokenError) ",
+  //       JSON.stringify(responsefreshTokenError, null, 2),
+  //     );
+  //   }
+  // }
 }
 
 PRIVATE_API.interceptors.response.use(
