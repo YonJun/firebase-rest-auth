@@ -5,33 +5,11 @@ import { Input } from "@chakra-ui/input";
 import { memo, useState } from "react";
 // import { useAddTodoMutation, useTodoQuery } from "../services/hooks/private";
 import { useUser, useAuth } from "reactfire";
-import { useMutation, useQueryClient } from "react-query";
-import { POST_AddTodo } from "../services/promises/private";
-import { LIST_TODO } from "../constants/QueryKeys";
+import { useAddTodoMutation } from "../services/hooks/private";
 
 const Header = () => {
   // console.log("render Header");
-  const queryClient = useQueryClient();
-
-  const { mutate, isLoading } = useMutation(POST_AddTodo, {
-    // When mutate is called:
-    onMutate: async (todo) => {
-      await queryClient.cancelQueries(LIST_TODO);
-
-      const previousValue = queryClient.getQueryData(LIST_TODO);
-
-      queryClient.setQueryData(LIST_TODO, (old) => [...old, todo]);
-
-      return previousValue;
-    },
-    // On failure, roll back to the previous value
-    onError: (err, variables, previousValue) =>
-      queryClient.setQueryData(LIST_TODO, previousValue),
-    // After success or failure, refetch the GET_listTodo query
-    onSettled: () => {
-      queryClient.invalidateQueries(LIST_TODO);
-    },
-  });
+  const { mutate, isLoading } = useAddTodoMutation();
   const { data: user } = useUser();
   const auth = useAuth();
 

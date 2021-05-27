@@ -10,68 +10,17 @@ import {
   useDeleteTodoMutation,
   useUpdateTodoMutation,
 } from "../services/hooks/private";
-import { useQueryClient } from "react-query";
-import { LIST_TODO } from "../constants/QueryKeys";
 
 /** @type {(props: Task) => JSX.Element} */
 const Task = ({ description, done, ID }) => {
-  const queryClient = useQueryClient();
-
   const [inputRef, setInputFocus] = useFocus();
   const [text, set_text] = useState(description);
   const textInput = useRef(description);
   const [flag, setFlag] = useState(done);
   const [isEdit, set_isEdit] = useBoolean();
-  const { mutate, isLoading } = useUpdateTodoMutation({
-    onMutate: async (newChangesTodo) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries(LIST_TODO);
-      // Snapshot the previous value
-      const previousTodo = queryClient.getQueryData(LIST_TODO);
-      // Optimistically update to the new value
-      queryClient.setQueryData(LIST_TODO, (old) =>
-        old.map((task) => {
-          if (task.ID === newChangesTodo.ID) {
-            return { ...task, ...newChangesTodo };
-          }
-          return task;
-        }),
-      );
-      // Return a context with the previous and new todo
-      return { previousTodo };
-    },
-    // If the mutation fails, use the context we returned above
-    onError: (_, __, context) => {
-      queryClient.setQueryData(LIST_TODO, context.previousTodo);
-    },
-    // Always refetch after error or success:
-    onSettled: () => {
-      queryClient.invalidateQueries(LIST_TODO);
-    },
-  });
+  const { mutate, isLoading } = useUpdateTodoMutation();
   const { mutate: deleteMutate, isLoading: deleteIsLoading } =
-    useDeleteTodoMutation({
-      onMutate: async (idTodo) => {
-        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-        await queryClient.cancelQueries([LIST_TODO, idTodo]);
-        // Snapshot the previous value
-        const previousTodo = queryClient.getQueryData(LIST_TODO);
-        // Optimistically update to the new value
-        queryClient.setQueryData(LIST_TODO, (old) =>
-          old.filter((task) => task.ID !== idTodo),
-        );
-        // Return a context with the previous and new todo
-        return { previousTodo };
-      },
-      // If the mutation fails, use the context we returned above
-      onError: (_, __, context) => {
-        queryClient.setQueryData(LIST_TODO, context.previousTodo);
-      },
-      // Always refetch after error or success:
-      onSettled: (newTodo) => {
-        queryClient.invalidateQueries(LIST_TODO);
-      },
-    });
+    useDeleteTodoMutation();
   // const { refetch } = useTodoQuery();
   // console.log(textInput.current);
 
