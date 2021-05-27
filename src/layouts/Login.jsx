@@ -5,9 +5,12 @@ import { useToast } from "@chakra-ui/react";
 // eslint-disable-next-line
 import tw from "twin.macro";
 import { useLoginMutation } from "../services/hooks/public";
+import { useFirebaseApp } from "reactfire";
+import rootFirebase from "firebase/app";
 
 const Login = () => {
   const toast = useToast();
+  const firebase = useFirebaseApp();
 
   const [fields, setFields] = useState({
     email: "user5@peru.pe",
@@ -80,6 +83,19 @@ const Login = () => {
         type="submit"
         isLoading={isLoading}>
         Iniciar sesión
+      </Button>
+      <Button
+        isFullWidth
+        colorScheme="red"
+        onClick={() => {
+          firebase
+            .auth()
+            .signInWithPopup(new rootFirebase.auth.GoogleAuthProvider());
+        }}>
+        Iniciar sesión con Google
+      </Button>
+      <Button isFullWidth colorScheme="facebook" onClick={() => {}}>
+        Iniciar sesión con Facebook
       </Button>
     </form>
   );
