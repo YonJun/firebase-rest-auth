@@ -18,8 +18,12 @@ export const POST_login = (params) => {
  *  @param {LoginParams} params
  *  @return {Promise<AxiosResponse<any>>}
  */
-export const POST_register = (params) =>
-  AUTH.post("/accounts:signUp", {
-    ...params,
-    returnSecureToken: true,
-  });
+export const POST_register = (params) => {
+  return firebase
+    .auth()
+    .createUserWithEmailAndPassword(params.email, params.password);
+};
+// AUTH.post("/accounts:signUp", {
+//   ...params,
+//   returnSecureToken: true,
+// });

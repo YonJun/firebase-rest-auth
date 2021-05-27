@@ -38,15 +38,15 @@ const Register = () => {
         },
         onError(err) {
           console.log("onError", err);
-          if (typeof err === "string") {
-            const e = err.charAt(0).toUpperCase() + err.slice(1).toLowerCase();
+          toast({
+            title: err.message,
+            status: "error",
+            isClosable: true,
+          });
+          // if (typeof err === "string") {
+          //   const e = err.charAt(0).toUpperCase() + err.slice(1).toLowerCase();
 
-            toast({
-              title: e.replace(/_/g, " "),
-              status: "error",
-              isClosable: true,
-            });
-          }
+          // }
         },
       },
     );
