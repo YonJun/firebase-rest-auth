@@ -40,10 +40,13 @@ const Header = () => {
     );
   };
 
+  const avatarUser = user.photoURL || "https://via.placeholder.com/150";
+
   return (
     <>
       <div tw="flex items-center justify-between">
         <h1>{user.email}</h1>
+        <img alt={user.email} src={avatarUser} tw="w-20 h-20 rounded-full" />
         <Button colorScheme="gray" onClick={btnLogout}>
           Cerrar sesión
         </Button>

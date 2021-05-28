@@ -100,7 +100,8 @@ const Login = () => {
         onClick={() => {
           firebase
             .auth()
-            .signInWithPopup(new rootFirebase.auth.FacebookAuthProvider());
+            .signInWithPopup(new rootFirebase.auth.FacebookAuthProvider())
+            .catch((e) => console.log("FacebookAuth error", e));
         }}>
         Iniciar sesión con Facebook
       </Button>
